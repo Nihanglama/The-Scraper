@@ -1,0 +1,76 @@
+{% extends 'scrape/main.html' %}
+{% block content %}
+
+<div id="form">
+    <form id="scrape-form">
+        {% csrf_token %}
+        <input type="text" placeholder="Enter URL of webpage to scrape tables" id="url-input">
+        <button type="submit">Scrape</button>
+    </form>
+</div>
+<h2 id="head" style="display: none;">Links Scraped</h2>
+
+<div id="contents">
+
+</div>
+
+<script>
+document.getElementById('scrape-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    handleForm();
+});
+
+function handleForm() {
+    var weburl = document.getElementById('url-input').value;
+
+    fetch("{% url 'tablescrape' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ 'weburl': weburl })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        displayTables(data);
+    })
+    .catch(error => {
+        document.getElementById('contents')
+    });
+}
+
+function displayTables(tableData) {
+    var contentDiv = document.getElementById('contents');
+    contentDiv.innerHTML = ''; 
+    document.getElementById('head').style.display = 'block'; 
+    console.log("called")
+    tableData.forEach(table => {
+        var tableElement = document.createElement('table');
+        var headerRow = document.createElement('tr');
+        tableElement.style.color="white"
+        table[0].forEach(header => {
+            var th = document.createElement('th');
+            th.textContent = header;
+            headerRow.appendChild(th);
+        });
+        
+        tableElement.appendChild(headerRow);
+        
+        for (var i = 1; i < table.length; i++) {
+            var row = document.createElement('tr');
+            table[i].forEach(cell => {
+                var td = document.createElement('td');
+                td.textContent = cell;
+                row.appendChild(td);
+            });
+            tableElement.appendChild(row);
+        }
+        
+        contentDiv.appendChild(tableElement);
+    });
+}
+</script>
+
+{% endblock content %}

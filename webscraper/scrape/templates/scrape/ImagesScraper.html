@@ -1,0 +1,66 @@
+{% extends 'scrape/main.html' %}
+{% block content %}
+
+<div id="form">
+    <form id="scrape-form">
+        {% csrf_token %}
+        <input type="text" placeholder="Enter URL of webpage to scrape images" id="url-input">
+        <button type="submit">Scrape</button>
+    </form>
+</div>
+<h2 id="head" style="display: none;">Images Scraped</h2>
+<div id="contents">
+
+</div>
+
+<script>
+document.getElementById('scrape-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    handleForm();
+});
+
+function handleForm() {
+    var weburl = document.getElementById('url-input').value;
+
+    fetch("{% url 'imagescrape' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ 'weburl': weburl })
+    })
+    .then(response => response.json())
+    .then(data => {
+        displayImages(data);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function displayImages(imageUrls) {
+    var contentDiv = document.getElementById('contents');
+            contentDiv.innerHTML = ''; // Clear previous images
+            if (imageUrls.length===0){
+                contentDiv.innerHTML="<h2 id='head'>No contents<h2/>"
+            }
+            else{
+                document.getElementById("head").style.display='block'
+            imageUrls.forEach(imageUrl => {
+                var imgContainer = document.createElement('div');
+                imgContainer.className = 'image-container';
+
+                var imgElement = document.createElement('img');
+                imgElement.src = imageUrl;
+                imgElement.alt = 'Scraped Image';
+
+                imgContainer.appendChild(imgElement);
+                contentDiv.appendChild(imgContainer);
+            });
+            }
+            
+}
+</script>
+
+{% endblock content %}

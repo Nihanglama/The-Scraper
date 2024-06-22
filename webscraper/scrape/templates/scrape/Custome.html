@@ -1,0 +1,76 @@
+{% extends 'scrape/main.html' %}
+{% block content %}
+
+<div id="form">
+    <form id="scrape-form">
+        {% csrf_token %}
+        <input type="text" placeholder="Enter URL of webpage to scrape tables" id="url-input">
+        <input type="text" placeholder="Enter html tag you want to scrape" id="tag">
+        <input type="text" placeholder="Enter id if you want to scrape specific id" id="id">
+        <input type="text" placeholder="Enetr class if you want to scrape data from class" id="class">
+        <button type="submit">Scrape</button>
+    </form>
+</div>
+<h2 id="head" style="display: none;">Data Scraped</h2>
+
+<div id="contents">
+
+</div>
+
+<script>
+document.getElementById('scrape-form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    handleForm();
+});
+
+function handleForm() {
+    var weburl = document.getElementById('url-input').value;
+    var tag=document.getElementById('tag').value;
+    var id=document.getElementById('id').value;
+    var classes= document.getElementById('class').value;
+
+    fetch("{% url 'customescrape' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({ 'weburl': weburl,'tag':tag,'id':id,'class':classes })
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+        displayData(data);
+    })
+    .catch(error => {
+        document.getElementById('contents')
+    });
+}
+
+function displayData(data) {
+    var contentDiv = document.getElementById('contents');
+    contentDiv.innerHTML = ''; 
+    document.getElementById('head').style.display = 'block';
+
+    const createList = (title, items) => {
+        if (items.length === 0) return `<li><strong>${title}:</strong><ul><li>Data not found</li></ul></li>`; // Return empty string if the list is empty
+        let html = `<li><strong>${title}:</strong><ul>`;
+        items.forEach(item => {
+            html += `<li>${item}</li>`;
+        });
+        html += `</ul></li>`;
+        return html;
+    };
+
+    let htmlContent = '<ul>';
+    htmlContent += createList('Class', data.class);
+    htmlContent += createList('ID', data.id);
+    htmlContent += createList('Tag', data.tag);
+    htmlContent += '</ul>';
+
+    contentDiv.innerHTML = htmlContent;
+    contentDiv.style.color='white'
+}
+</script>
+
+{% endblock content %}

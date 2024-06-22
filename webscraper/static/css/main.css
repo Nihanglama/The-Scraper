@@ -1,0 +1,102 @@
+body{
+    background-color: rgba(26,30,39,255) !important;
+    color: white;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+
+}
+.content {
+    flex: 1;
+    box-sizing: border-box;
+    /* border: 1px solid wheat; */
+}
+#intro{
+    margin: 0 auto;
+    text-align: center;
+    padding-top: 5%;
+   
+}
+#intro h2{
+    font-size: 70px;
+    color: rgb(103, 219, 219);
+}
+#intro h3{
+    font-size: 40px;
+    color: white;
+}
+.content img{
+    height: 40%;
+    /* border: 3px solid white; */
+}
+#bg{
+    text-align: center;
+    margin-left: 6%;
+}
+#nav{
+    background-color: rgb(103, 219, 219) !important;
+}
+#form{
+    margin: 0 auto;
+    text-align: center;
+    margin-top: 50px;
+    padding-left: 35%;
+    /* margin-bottom: 30%; */
+
+}
+form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+}
+form input{
+    text-align: center;
+    width: 400px;
+    height: 40px;
+}
+form button{
+    height: 30px;
+    width: 100px;
+    margin-left: 15%;
+    border: none;
+    border-radius: 4px;
+    background-color:rgb(103, 219, 219) ;
+}
+#contents{
+    color: white;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 30%;
+    margin-left: 3%;
+}
+.image-container {
+    flex: 1 1 calc(33.333% - 10px); /* Three images per row with gap consideration */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+.image-container img {
+    width: 50%;
+    height: auto; 
+}
+
+#head{
+    margin-top: 3%;
+    color: white;
+    text-align: center;
+    margin-bottom: 3%;
+}
+
+#footer{
+    background-color:rgb(103, 219, 219) ;
+    position: sticky;
+
+}
+.card{
+    background-color:rgb(103, 219, 219) !important;
+    border: none !important;
+}
+#red{
+    color: red;
+}
+
